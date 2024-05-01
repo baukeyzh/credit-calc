@@ -52,7 +52,6 @@ class CalcRequestController extends Controller
         }
 
         $response = [
-            'calcRequest' => $calcRequest,
             'creditCalculations' => $creditCalculations,
         ];
 
