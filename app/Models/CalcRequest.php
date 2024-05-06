@@ -15,4 +15,9 @@ class CalcRequest extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function calcRequest()
+    {
+        return $this->belongsTo('App\Models\CalcRequest', 'calc_request_id');
+    }
 }

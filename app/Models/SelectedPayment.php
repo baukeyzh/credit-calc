@@ -19,4 +19,9 @@ class SelectedPayment extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function selectedPayments()
+    {
+        return $this->hasMany('App\Models\SelectedPayment', 'calc_request_id');
+    }
 }
