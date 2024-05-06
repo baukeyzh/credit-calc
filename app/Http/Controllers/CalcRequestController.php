@@ -37,12 +37,13 @@ class CalcRequestController extends Controller
         $terms = [12, 24, 36, 48, 60, 72, 84];
         $creditCalculations = [];
         $years = [
-            'Halyk' => 5, // TODO пепревсти в глобальную переменную
-            'Eurasian' => 6,
-            'Bereke' => 5
+            'Centercredit' => 7, // TODO пепревсти в глобальную переменную
+            'Eurasian' => 7,
+            'Bereke' => 7,
+            'VTB' => 7
         ];
 
-        foreach (['Halyk', 'Eurasian', 'Bereke'] as $bank) {
+        foreach (['Eurasian','Centercredit', 'Bereke', 'VTB'] as $bank) {
             foreach ($terms as $key => $term) {
                 $creditCalculations[$bank][$term] = $this->calculateMonthlyPayment($loanAmount, $term, $bank);
                 if  ($key+1 == $years[$bank]) {
@@ -61,24 +62,23 @@ class CalcRequestController extends Controller
 
     private function calculateMonthlyPayment($principal, $term, $bank)
     {
-        switch ($bank) {
-            case 'Halyk':
-                $annualRate = 0.003;  // Пример процентной ставки
+        $annualRates = [
+            'Centercredit' => 22.68,
+            'Eurasian' => 23.68,
+            'Bereke' => 26.80,
+            'VTB' => 26.40
+        ];
 
-                break;
-            case 'Eurasian':
-                $annualRate = 0.21;   // TODO пепревсти в глобальную переменную
-                break;
-            case 'Bereke':
-                $annualRate = 0.09;
-                break;
-        }
+        $annualRatePercent = $annualRates[$bank] ?? 0.0; // Default to zero if the bank is not recognized
+        $annualRate = $annualRatePercent / 100; // Convert from percentage to decimal
 
-        $monthlyRate = $annualRate / 12;
+        $monthlyRate = pow(1 + $annualRate, 1 / 12) - 1;
+
         $monthlyPayment = ($monthlyRate * $principal) / (1 - pow(1 + $monthlyRate, -$term));
 
-        return round($monthlyPayment);
+        return round($monthlyPayment, 2);
     }
+
 
 
     public function show(CalcRequest $calcRequest)
