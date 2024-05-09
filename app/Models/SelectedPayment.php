@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -20,8 +19,8 @@ class SelectedPayment extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function selectedPayments()
+    public function calcRequest()
     {
-        return $this->hasMany('App\Models\SelectedPayment', 'calc_request_id');
+        return $this->belongsTo('App\Models\CalcRequest', 'calc_request_id');
     }
 }
