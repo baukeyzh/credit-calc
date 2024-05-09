@@ -16,8 +16,8 @@ class CalcRequest extends Model
 
     protected $dates = ['deleted_at'];
 
-    public function calcRequest()
+    public function selectedPayments()
     {
-        return $this->belongsTo('App\Models\CalcRequest', 'calc_request_id');
+        return $this->hasMany('App\Models\SelectedPayment', 'calc_request_id');
     }
 }
