@@ -10,9 +10,21 @@ class CalcRequestController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return response()->json(CalcRequest::all());
+        $query = CalcRequest::with('selectedPayments');
+
+        if ($request->has('user_id')) {
+            $query->where('user_id', $request->user_id);
+        }
+
+        if ($request->has('start_date') && $request->has('end_date')) {
+            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+        }
+
+        $calcRequests = $query->paginate($request->get('per_page', 3));
+
+        return response()->json($calcRequests);
     }
 
     public function store(Request $request)
