@@ -22,7 +22,7 @@ class CalcRequestController extends Controller
             $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
         }
 
-        $calcRequests = $query->paginate($request->get('per_page', 3));
+        //$calcRequests = $query->paginate($request->get('per_page', 20));
 
         return response()->json($calcRequests);
     }
