@@ -19,7 +19,17 @@ class CalcRequestController extends Controller
         }
 
         if ($request->has('start_date') && $request->has('end_date')) {
-            $query->whereBetween('updated_at', [$request->start_date, $request->end_date]);
+            // Добавляем конец дня к end_date
+            $endDate = new \DateTime($request->end_date);
+            $endDate->setTime(23, 59, 59);
+            $query->whereBetween('updated_at', [$request->start_date, $endDate]);
+        } elseif ($request->has('start_date')) {
+            $query->where('updated_at', '>=', $request->start_date);
+        } elseif ($request->has('end_date')) {
+            // Добавляем конец дня к end_date
+            $endDate = new \DateTime($request->end_date);
+            $endDate->setTime(23, 59, 59);
+            $query->where('updated_at', '<=', $endDate);
         }
 
         $calcRequests = $query->get();
