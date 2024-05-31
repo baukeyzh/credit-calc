@@ -32,10 +32,15 @@ class CalcRequestController extends Controller
             $query->where('updated_at', '<=', $endDate);
         }
 
+        if ($request->has('order_by') && in_array($request->order_by, ['asc', 'desc'])) {
+            $query->orderBy('created_at', $request->order_by);
+        }
+
         $calcRequests = $query->get();
 
         return response()->json($calcRequests);
     }
+
 
     public function store(Request $request)
     {
