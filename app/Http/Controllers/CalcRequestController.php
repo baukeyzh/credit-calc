@@ -60,7 +60,7 @@ class CalcRequestController extends Controller
 
         $calcRequest = CalcRequest::create($validated);
 
-        $loanAmount = $validated['price'] - $validated['initial_payment'];
+        $price = $validated['price'];
         $terms = [12, 24, 36, 48, 60, 72, 84];
         $creditCalculations = [];
         $years = [
@@ -70,13 +70,23 @@ class CalcRequestController extends Controller
             'VTB' => 7
         ];
 
+        $incomePercents = [
+            'Centercredit' => 10, // TODO пепревсти в глобальную переменную
+            'Eurasian' => 15,
+            'Bereke' => 20,
+            'VTB' => 25
+        ];
+
         foreach (['Eurasian','Centercredit', 'Bereke', 'VTB'] as $bank) {
+            $loanPrice = $price*(1-(($incomePercents[$bank] ?? 0)/100));
             foreach ($terms as $key => $term) {
-                $creditCalculations[$bank][$term] = $this->calculateMonthlyPayment($loanAmount, $term, $bank);
+                $creditCalculations[$bank]['monthlyPayments'][$term] = $this->calculateMonthlyPayment($loanPrice, $term, $bank);
                 if  ($key+1 == $years[$bank]) {
                     break;
                 }
             }
+            $creditCalculations[$bank]['incomePercent'] = $incomePercents[$bank];
+            $creditCalculations[$bank]['incomePrice'] = ($incomePercents[$bank] * $price)/100;
         }
 
         $response = [
