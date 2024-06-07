@@ -77,7 +77,7 @@ class CalcRequestController extends Controller
             'VTB' => 25
         ];
         $incomeColor = [
-            10 => "green", // TODO пепревсти в глобальную переменную
+            10 => "#64bd38", // TODO пепревсти в глобальную переменную
             15 => "yellow",
             20 => "orange",
             25 => "red"
