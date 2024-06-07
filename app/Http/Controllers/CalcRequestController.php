@@ -76,6 +76,14 @@ class CalcRequestController extends Controller
             'Bereke' => 20,
             'VTB' => 25
         ];
+        $incomeColor = [
+            10 => "green", // TODO пепревсти в глобальную переменную
+            15 => "yellow",
+            20 => "orange",
+            25 => "red"
+        ];
+
+
 
         foreach (['Eurasian','Centercredit', 'Bereke', 'VTB'] as $bank) {
             $loanPrice = $price*(1-(($incomePercents[$bank] ?? 0)/100));
@@ -87,6 +95,7 @@ class CalcRequestController extends Controller
             }
             $creditCalculations[$bank]['incomePercent'] = $incomePercents[$bank];
             $creditCalculations[$bank]['incomePrice'] = ($incomePercents[$bank] * $price)/100;
+            $creditCalculations[$bank]['incomeColor'] = $incomeColor[$incomePercents[$bank]];
         }
 
         $response = [
