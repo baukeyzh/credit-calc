@@ -71,30 +71,44 @@ class CalcRequestController extends Controller
         ];
 
         $incomePercents = [
-            'Centercredit' => 10, // TODO пепревсти в глобальную переменную
-            'Eurasian' => 15,
-            'Bereke' => 20,
-            'VTB' => 25
+            'Centercredit' => 10.00, // TODO пепревсти в глобальную переменную
+            'Eurasian' => 15.00,
+            'Bereke' => 20.00,
+            'VTB' => 25.00
         ];
         $incomeColor = [
-            10 => "#64bd38", // TODO пепревсти в глобальную переменную
-            15 => "yellow",
-            20 => "orange",
-            25 => "red"
+            10.00 => "#64bd38", // TODO пепревсти в глобальную переменную
+            15.00 => "yellow",
+            20.00 => "orange",
+            25.00 => "red"
         ];
 
-
+        $maxAmount = [
+            'Centercredit' => 25000000, // TODO пепревсти в глобальную переменную
+            'Eurasian' => 13500000,
+            'Bereke' => 15000000,
+            'VTB' => 8000000,
+            //'Freedom' => 25000000
+        ];
 
         foreach (['Eurasian','Centercredit', 'Bereke', 'VTB'] as $bank) {
-            $loanPrice = $price*(1-(($incomePercents[$bank] ?? 0)/100));
+            $initialPayment = $validated['initial_payment'];
+
+            if ($price - $initialPayment > $maxAmount[$bank]) {
+                $initialPayment = $price - $maxAmount[$bank];
+            }
+            if (floor($initialPayment * 100 / $price) < $incomePercents[$bank]) {
+                $initialPayment = $incomePercents[$bank] * $price / 100;
+            }
+            $loanPrice = $price - $initialPayment;
             foreach ($terms as $key => $term) {
                 $creditCalculations[$bank]['monthlyPayments'][$term] = $this->calculateMonthlyPayment($loanPrice, $term, $bank);
                 if  ($key+1 == $years[$bank]) {
                     break;
                 }
             }
-            $creditCalculations[$bank]['incomePercent'] = $incomePercents[$bank];
-            $creditCalculations[$bank]['incomePrice'] = ($incomePercents[$bank] * $price)/100;
+            $creditCalculations[$bank]['incomePercent'] = floor($initialPayment * 100 / $price) ;
+            $creditCalculations[$bank]['incomePrice'] = $initialPayment;
             $creditCalculations[$bank]['incomeColor'] = $incomeColor[$incomePercents[$bank]];
         }
 
