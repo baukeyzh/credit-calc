@@ -76,12 +76,7 @@ class CalcRequestController extends Controller
             'Bereke' => 20.00,
             'VTB' => 25.00
         ];
-        $incomeColor = [
-            10.00 => "#64bd38", // TODO пепревсти в глобальную переменную
-            15.00 => "yellow",
-            20.00 => "orange",
-            25.00 => "red"
-        ];
+
 
         $maxAmount = [
             'Centercredit' => 25000000, // TODO пепревсти в глобальную переменную
@@ -109,7 +104,7 @@ class CalcRequestController extends Controller
             }
             $creditCalculations[$bank]['incomePercent'] = floor($initialPayment * 100 / $price) ;
             $creditCalculations[$bank]['incomePrice'] = $initialPayment;
-            $creditCalculations[$bank]['incomeColor'] = $incomeColor[$incomePercents[$bank]];
+            $creditCalculations[$bank]['incomeColor'] = $this->getColorByPercent(floor($initialPayment * 100 / $price));
         }
 
         $response = [
@@ -137,6 +132,26 @@ class CalcRequestController extends Controller
         $monthlyPayment = ($monthlyRate * $principal) / (1 - pow(1 + $monthlyRate, -$term));
 
         return round($monthlyPayment, 2);
+    }
+
+    private function getColorByPercent($percent)
+    {
+        // Округляем процент до целого числа, чтобы лучше соответствовать условиям
+        $percent = round($percent);
+
+        // Используем switch case для определения цвета
+        switch (true) {
+            case ($percent >= 10 && $percent < 20):
+                return "#64bd38"; // Зеленый цвет
+            case ($percent >= 20 && $percent < 30):
+                return "yellow"; // Желтый цвет
+            case ($percent >= 30 && $percent < 50):
+                return "orange"; // Оранжевый цвет
+            case ($percent >= 50):
+                return "red"; // Красный цвет
+            default:
+                return ""; // В случае, если процент не соответствует заданным интервалам
+        }
     }
 
 
