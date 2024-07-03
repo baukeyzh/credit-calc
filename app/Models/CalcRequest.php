@@ -10,7 +10,7 @@ class CalcRequest extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'phone_number', 'iin', 'name', 'surname', 'price', 'initial_payment',
+        'phone_number', 'iin', 'name', 'surname','patronymic', 'price', 'initial_payment',
         'additional_income', 'partner_income', 'children_count', 'ads_id', 'user_id',
     ];
 
